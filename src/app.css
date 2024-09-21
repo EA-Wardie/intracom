@@ -33,7 +33,7 @@
  
     --ring: 0 0% 3.9%;
  
-    --radius: 0.5rem;
+    --radius: 0rem;
   }
  
   .dark {
@@ -53,6 +53,7 @@
     --input: 0 0% 14.9%;
  
     --primary: 0 0% 98%;
+    /*--primary: 84 81% 44%;*/
     --primary-foreground: 0 0% 9%;
  
     --secondary: 0 0% 14.9%;
