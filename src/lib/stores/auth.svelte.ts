@@ -1,23 +1,24 @@
 import { getContext, setContext } from 'svelte';
 import { pb } from '$lib/pb';
+import type { User } from '$lib/types';
 
 class AuthStore {
 	username = $state<string>('');
 	password = $state<string>('');
 
-	get isLoggedIn() {
+	get isLoggedIn(): boolean {
 		return pb.authStore.isValid;
 	}
 
-	get user() {
-		return pb.authStore.model;
+	get user(): User {
+		return pb.authStore.model as User;
 	}
 
-	async login() {
+	async login(): Promise<void> {
 		await pb.collection('users').authWithPassword(this.username, this.password);
 	}
 
-	async register() {
+	async register(): Promise<void> {
 		await pb.collection('users').create({
 			username: this.username,
 			password: this.password,
@@ -26,7 +27,11 @@ class AuthStore {
 		await this.login();
 	}
 
-	logout() {
+	async delete(): Promise<void> {
+
+	}
+
+	logout(): void {
 		pb.authStore.clear();
 	}
 }
