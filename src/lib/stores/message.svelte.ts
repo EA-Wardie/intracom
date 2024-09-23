@@ -5,22 +5,44 @@ import { pb } from '$lib/pb';
 class MessageStore {
 	messages = $state<Message[]>([]);
 
-	constructor() {}
-
-	async fetch(id: string) {
-		pb.collection('chats')
-			.getOne(id, { expand: 'messages' })
-			.then((chat) => {
-				this.messages = chat.expand?.messages || [];
+	async fetch(chatId: string) {
+		pb.collection('messages')
+			.getFullList({ filter: `chat="${chatId}"`, expand: 'user', fields: 'text,expand' })
+			.then((messages) => {
+				this.messages = messages;
 			});
-		// pb.collection('messages')
-		// 	.getFullList()
-		// 	.then((messages) => {
-		// 		this.messages = messages;
-		// 	});
 	}
 
-	async create() {}
+	async create(chatId: string, text: string) {
+		await pb.collection('messages').create(
+			{
+				text: text,
+				user: pb.authStore.model?.id,
+				chat: chatId,
+			},
+			{
+				expand: 'user',
+			},
+		);
+	}
+
+	async subscribe() {
+		await pb.collection('messages').subscribe(
+			'*',
+			(event) => {
+				if (event.action === 'create') {
+					this.messages.push(event.record);
+				}
+			},
+			{
+				expand: 'user',
+			},
+		);
+	}
+
+	async unsubscribe() {
+		await pb.collection('messages').unsubscribe('*');
+	}
 }
 
 const STORE_CONTEXT_ID: string = 'store:message';

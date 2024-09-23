@@ -10,8 +10,8 @@ class AuthStore {
 		return pb.authStore.isValid;
 	}
 
-	get user(): User {
-		return pb.authStore.model as User;
+	get user(): User | null {
+		return pb.authStore.model as User | null;
 	}
 
 	async login(): Promise<void> {
@@ -27,12 +27,17 @@ class AuthStore {
 		await this.login();
 	}
 
-	async delete(): Promise<void> {
-
-	}
-
 	logout(): void {
 		pb.authStore.clear();
+	}
+
+	async delete(): Promise<void> {
+		await pb
+			.collection('users')
+			.delete(pb.authStore.model?.id)
+			.then(() => {
+				this.logout();
+			});
 	}
 }
 

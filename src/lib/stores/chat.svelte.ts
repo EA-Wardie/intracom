@@ -6,18 +6,39 @@ class ChatStore {
 	chats = $state<Chat[]>([]);
 
 	constructor() {
-		$effect(() => {
+		pb.collection('chats')
+			.getFullList({ filter: `users~"${pb.authStore.model?.id}"`, expand: 'users', fields: 'id,expand' })
+			.then((chats) => {
+				this.chats = chats;
+			});
+	}
+
+	async create(username: string): Promise<void> {
+		return new Promise((resolve, reject) => {
 			pb.collection('users')
-				.getOne(pb.authStore.model?.id, { expand: 'chats.users' })
+				.getFirstListItem(`username="${username}"`, { fields: 'id' })
 				.then((user) => {
-					this.chats = user.expand?.chats || [];
+					pb.collection('chats')
+						.create(
+							{
+								users: [pb.authStore.model?.id, user.id],
+							},
+							{ expand: 'users' },
+						)
+						.then((chat) => {
+							this.chats.push(chat);
+
+							resolve();
+						})
+						.catch(() => {
+							reject();
+						});
+				})
+				.catch(() => {
+					reject();
 				});
 		});
 	}
-
-	async create() {}
-
-	async update() {}
 }
 
 const STORE_CONTEXT_ID: string = 'store:chat';

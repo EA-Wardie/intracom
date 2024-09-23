@@ -3,8 +3,13 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { getAuthStoreContext } from '$lib/stores/auth.svelte';
 	import { goto } from '$app/navigation';
+	import { setChatStoreContext } from '$lib/stores/chat.svelte';
+	import { setMessageStoreContext } from '$lib/stores/message.svelte';
 
 	let { children } = $props();
+
+	setChatStoreContext();
+	setMessageStoreContext();
 
 	const authStore = getAuthStoreContext();
 
