@@ -7,6 +7,7 @@ type Expand = {
 export type Chat = {
 	id: string;
 	users: string[];
-	messages: Message[];
+	created: string;
+	updated: string;
 	expand?: Expand;
 };

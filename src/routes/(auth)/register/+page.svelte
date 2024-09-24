@@ -8,8 +8,11 @@
 
 	const authStore = getAuthStoreContext();
 
+	let username = $state<string>('');
+	let password = $state<string>('');
+
 	const attemptRegister = function() {
-		authStore.register().then(() => {
+		authStore.register(username, password).then(() => {
 			history.back();
 		});
 	};
@@ -25,13 +28,13 @@
 			<Card.Content class="flex flex-col gap-6">
 				<Label class="flex flex-col gap-1">
 					Username
-					<Input required placeholder="Enter a username" bind:value={authStore.username} />
+					<Input required placeholder="Enter a username" bind:value={username} />
 					<p class="text-xs text-muted-foreground text-end">usernames are public</p>
 				</Label>
 				<Label class="flex flex-col gap-1">
 					Password
 					<Input required type="password" placeholder="Enter a password" minlength={8}
-						   bind:value={authStore.password} />
+						   bind:value={password} />
 				</Label>
 			</Card.Content>
 			<Card.Footer class="flex flex-col gap-4">

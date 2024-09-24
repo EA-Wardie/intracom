@@ -11,9 +11,15 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { goto } from '$app/navigation';
 	import { toggleMode } from 'mode-watcher';
+	import { onDestroy, onMount } from 'svelte';
+	import { humanDate } from '$lib/utils';
 
 	const chatStore = getChatStoreContext();
 	const authStore = getAuthStoreContext();
+
+	onMount(async () => {
+		await chatStore.subscribe();
+	});
 
 	let newUsername = $state<string>();
 
@@ -33,19 +39,24 @@
 			goto('/login');
 		});
 	};
+
+	onDestroy(async () => {
+		await chatStore.unsubscribe();
+	});
 </script>
 
 <section class="w-full h-screen">
 	<Tabs.Root value="chats" class="w-full h-full flex flex-col overflow-y-auto">
 		<Tabs.Content value="chats" class="grow m-0">
 			<div class="sticky top-0 flex gap-4 p-4 border-b">
-				<Input placeholder="Enter a username..." bind:value={newUsername} />
-				<Button disabled={!newUsername} onclick={attemptAdd}>Add</Button>
+				<Input placeholder="Enter a username..." class="h-9" bind:value={newUsername} />
+				<Button size="sm" disabled={!newUsername} onclick={attemptAdd}>Add</Button>
 			</div>
-			<div class="flex flex-col gap-4 p-4 md:p-12">
+			<div class="flex flex-col gap-4 p-4">
 				{#each chatStore.chats as chat (chat.id)}
-					<Button variant="outline" href="/chat/{chat.id}" class="justify-start">
-						@{chat.expand?.users?.find((user) => user.id !== authStore.user?.id)?.username}
+					<Button variant="outline" href="/chat/{chat.id}" class="justify-between">
+						<p>@{chat.expand?.users?.find((user) => user.id !== authStore.user?.id)?.username}</p>
+						<p class="text-xs text-muted-foreground">{humanDate(chat.created)}</p>
 					</Button>
 				{/each}
 				{#if chatStore.chats.length === 0}
@@ -60,10 +71,10 @@
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="account" class="grow m-0">
-			<div class="flex flex-col gap-4 p-4 md:p-12">
+			<div class="flex flex-col gap-4 p-4">
 				<h1 class="text-2xl">@{authStore.user?.username}</h1>
 				<AlertDialog.Root>
-					<AlertDialog.Trigger class={buttonVariants({variant: 'default'})}>
+					<AlertDialog.Trigger class={buttonVariants({variant: 'default', size: 'sm'})}>
 						Sign Out
 					</AlertDialog.Trigger>
 					<AlertDialog.Content>
@@ -82,7 +93,7 @@
 					</AlertDialog.Content>
 				</AlertDialog.Root>
 				<AlertDialog.Root>
-					<AlertDialog.Trigger class={buttonVariants({variant: 'destructive'})}>
+					<AlertDialog.Trigger class={buttonVariants({variant: 'destructive', size: 'sm'})}>
 						Delete Account
 					</AlertDialog.Trigger>
 					<AlertDialog.Content>
@@ -105,9 +116,9 @@
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="settings" class="grow m-0">
-			<div class="flex flex-col gap-4 p-4 md:p-12">
+			<div class="flex flex-col gap-4 p-4">
 				<h1 class="text-2xl">Settings</h1>
-				<Button onclick={toggleMode}>Toggle Theme</Button>
+				<Button size="sm" onclick={toggleMode}>Toggle Theme</Button>
 			</div>
 		</Tabs.Content>
 		<Tabs.List class="sticky bottom-0 shrink-0 grow-0">

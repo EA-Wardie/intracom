@@ -64,3 +64,7 @@ export const initials = function (name: string) {
 
 	return `${sections[0].charAt(0).toUpperCase()}${sections[0].charAt(1).toUpperCase()}`;
 };
+
+export const humanDate = function (date: string) {
+	return new Date(date).toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' });
+};

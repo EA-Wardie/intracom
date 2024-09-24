@@ -7,37 +7,26 @@ class MessageStore {
 
 	async fetch(chatId: string) {
 		pb.collection('messages')
-			.getFullList({ filter: `chat="${chatId}"`, expand: 'user', fields: 'text,expand' })
+			.getFullList({ filter: `chat="${chatId}"`, fields: 'text,user,created,expand' })
 			.then((messages) => {
 				this.messages = messages;
 			});
 	}
 
 	async create(chatId: string, text: string) {
-		await pb.collection('messages').create(
-			{
-				text: text,
-				user: pb.authStore.model?.id,
-				chat: chatId,
-			},
-			{
-				expand: 'user',
-			},
-		);
+		await pb.collection('messages').create({
+			text: text,
+			user: pb.authStore.model?.id,
+			chat: chatId,
+		});
 	}
 
-	async subscribe() {
-		await pb.collection('messages').subscribe(
-			'*',
-			(event) => {
-				if (event.action === 'create') {
-					this.messages.push(event.record);
-				}
-			},
-			{
-				expand: 'user',
-			},
-		);
+	async subscribe(chatId: string) {
+		await pb.collection('messages').subscribe('*', (event) => {
+			if (event.action === 'create' && event.record.chat === chatId) {
+				this.messages.push(event.record);
+			}
+		});
 	}
 
 	async unsubscribe() {

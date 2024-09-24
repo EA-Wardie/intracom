@@ -7,7 +7,7 @@ class ChatStore {
 
 	constructor() {
 		pb.collection('chats')
-			.getFullList({ filter: `users~"${pb.authStore.model?.id}"`, expand: 'users', fields: 'id,expand' })
+			.getFullList({ filter: `users~"${pb.authStore.model?.id}"`, expand: 'users', fields: 'id,created,expand' })
 			.then((chats) => {
 				this.chats = chats;
 			});
@@ -25,19 +25,27 @@ class ChatStore {
 							},
 							{ expand: 'users' },
 						)
-						.then((chat) => {
-							this.chats.push(chat);
-
-							resolve();
-						})
-						.catch(() => {
-							reject();
-						});
+						.then(() => resolve())
+						.catch(() => reject());
 				})
-				.catch(() => {
-					reject();
-				});
+				.catch(() => reject());
 		});
+	}
+
+	async subscribe() {
+		await pb.collection('chats').subscribe(
+			'*',
+			(event) => {
+				if (event.action === 'create' && event.record.users.includes(pb.authStore.model?.id)) {
+					this.chats.push(event.record);
+				}
+			},
+			{ expand: 'users' },
+		);
+	}
+
+	async unsubscribe() {
+		await pb.collection('chats').unsubscribe('*');
 	}
 }
 

@@ -3,9 +3,6 @@ import { pb } from '$lib/pb';
 import type { User } from '$lib/types';
 
 class AuthStore {
-	username = $state<string>('');
-	password = $state<string>('');
-
 	get isLoggedIn(): boolean {
 		return pb.authStore.isValid;
 	}
@@ -14,17 +11,17 @@ class AuthStore {
 		return pb.authStore.model as User | null;
 	}
 
-	async login(): Promise<void> {
-		await pb.collection('users').authWithPassword(this.username, this.password);
+	async login(username: string, password: string): Promise<void> {
+		await pb.collection('users').authWithPassword(username, password);
 	}
 
-	async register(): Promise<void> {
+	async register(username: string, password: string): Promise<void> {
 		await pb.collection('users').create({
-			username: this.username,
-			password: this.password,
-			passwordConfirm: this.password,
+			username: username,
+			password: password,
+			passwordConfirm: password,
 		});
-		await this.login();
+		await this.login(username, password);
 	}
 
 	logout(): void {
