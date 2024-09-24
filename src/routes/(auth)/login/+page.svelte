@@ -37,7 +37,7 @@
 				</Label>
 			</Card.Content>
 			<Card.Footer class="flex flex-col gap-4">
-				<Button class="w-full gap-2" type="submit">
+				<Button class="w-full gap-2" type="submit" disabled={authStore.processing}>
 					Sign In
 					<ArrowRight class="w-4 h-4" />
 				</Button>

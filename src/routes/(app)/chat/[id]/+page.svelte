@@ -45,8 +45,8 @@
 	});
 </script>
 
-<section class="h-full min-h-screen flex flex-col">
-	<div class="sticky top-0 flex justify-between items-center border-b pl-1 pr-2 py-1">
+<section class="h-full min-h-dvh flex flex-col">
+	<div class="sticky top-0 flex justify-between items-center border-b bg-background pl-2 pr-3 py-2">
 		<Button size="sm" variant="ghost" onclick={() => history.back()}>Back</Button>
 		<Badge>@{invitee()?.username}</Badge>
 	</div>
@@ -70,8 +70,7 @@
 			</Card.Root>
 		{/if}
 	</div>
-	<Separator />
-	<div class="sticky bottom-0 shrink-0 grow-0 flex gap-4 p-4">
+	<div class="sticky bottom-0 shrink-0 grow-0 flex gap-2 border-t bg-background p-2">
 		<Input placeholder="Enter your message..." class="h-9" bind:value={newMessage} />
 		<Button size="sm" disabled={!newMessage} onclick={attemptSend}>
 			<SendHorizontal class="w-4 h-4" />

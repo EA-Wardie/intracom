@@ -22,6 +22,6 @@
 
 <ModeWatcher />
 
-<main class="w-full h-full min-h-screen">
+<main class="w-full h-full min-h-dvh">
 	{@render children()}
 </main>

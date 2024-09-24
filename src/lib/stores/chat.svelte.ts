@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import { pb } from '$lib/pb';
 import type { Chat } from '$lib/types';
+import { toast } from 'svelte-sonner';
 
 class ChatStore {
 	chats = $state<Chat[]>([]);
@@ -25,8 +26,14 @@ class ChatStore {
 							},
 							{ expand: 'users' },
 						)
-						.then(() => resolve())
-						.catch(() => reject());
+						.then(() => {
+							toast(`Started a chat with - ${user.username}`);
+							resolve();
+						})
+						.catch((error) => {
+							toast(error.message);
+							reject();
+						});
 				})
 				.catch(() => reject());
 		});

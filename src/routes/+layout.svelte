@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
 	import { setAuthStoreContext } from '$lib/stores/auth.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
 
 	let { children } = $props();
 
@@ -14,5 +15,6 @@
 </svelte:head>
 
 <ModeWatcher />
+<Toaster />
 
 {@render children()}

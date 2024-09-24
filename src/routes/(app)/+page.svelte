@@ -45,10 +45,10 @@
 	});
 </script>
 
-<section class="w-full h-screen">
+<section class="w-full h-dvh">
 	<Tabs.Root value="chats" class="w-full h-full flex flex-col overflow-y-auto">
 		<Tabs.Content value="chats" class="grow m-0">
-			<div class="sticky top-0 flex gap-4 p-4 border-b">
+			<div class="sticky top-0 flex gap-2 p-2 border-b bg-background">
 				<Input placeholder="Enter a username..." class="h-9" bind:value={newUsername} />
 				<Button size="sm" disabled={!newUsername} onclick={attemptAdd}>Add</Button>
 			</div>
