@@ -21,7 +21,7 @@ class AuthStore {
 			.collection('users')
 			.authWithPassword(username, password)
 			.then((response) => {
-				toast(`Sign in as - ${response.record.username}`);
+				toast(`Signed in as - ${response.record.username}`);
 			})
 			.catch((error) => {
 				toast(error.message);
